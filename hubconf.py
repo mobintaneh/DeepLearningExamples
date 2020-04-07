@@ -346,6 +346,7 @@ def nvidia_ssd(pretrained=True, **kwargs):
 
     fp16 = "model_math" in kwargs and kwargs["model_math"] == "fp16"
     force_reload = "force_reload" in kwargs and kwargs["force_reload"]
+    map_location = "map_location" in kwargs and kwargs["map_location"]
 
     m = ssd.SSD300()
     if fp16:
@@ -368,7 +369,7 @@ def nvidia_ssd(pretrained=True, **kwargs):
             checkpoint = 'https://api.ngc.nvidia.com/v2/models/nvidia/ssdpyt_fp32/versions/1/files/nvidia_ssdpyt_fp32_20190225.pt'
         # ckpt = torch.hub.load_state_dict_from_url(checkpoint, progress=True, check_hash=False)
         ckpt_file = _download_checkpoint(checkpoint, force_reload)
-        ckpt = torch.load(ckpt_file)
+        ckpt = torch.load(ckpt_file, map_location=map_location)
         ckpt = ckpt['model']
         if checkpoint_from_distributed(ckpt):
             ckpt = unwrap_distributed(ckpt)
